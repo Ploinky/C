@@ -17,10 +17,7 @@ int yPos;
 HWND hwnd;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-LRESULT CALLBACK PanelProc(HWND, UINT, WPARAM, LPARAM);
 void CenterWindow(HWND);
-void RegisterRedPanelClass(void);
-void RegisterBluePanelClass(void);
 void draw();
 
 #endif /* SRC_MAIN_H_ */

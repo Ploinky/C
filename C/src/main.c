@@ -51,11 +51,16 @@ void draw()
 	HDC hdcTotalArtist = GetDC(hwnd);
 
 	RECT rect;
+
 	if (GetWindowRect(hwnd, &rect))
 	{
 		int width = rect.right - rect.left;
 		int height = rect.bottom - rect.top;
 		Rectangle(hdcTotalArtist, 0, 0, width, height);
+	}
+	else
+	{
+		PostQuitMessage(99);
 	}
 
 	Rectangle(hdcTotalArtist, xPos - 5, yPos - 5, xPos + 5, yPos + 5);
@@ -70,13 +75,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case WM_KEYDOWN:
 			if (wParam == VK_ESCAPE)
 			{
-
-				int ret = MessageBoxW(hwnd, L"Are you sure to quit?",
+				int ret = MessageBoxW(hwnd, L"Are you sure you want to quit?",
 				        L"Message", MB_OKCANCEL);
-
 				if (ret == IDOK)
 				{
-
 					SendMessage(hwnd, WM_CLOSE, 0, 0);
 				}
 			}
@@ -85,7 +87,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		case WM_CREATE:
 			CenterWindow(hwnd);
-			RegisterRedPanelClass();
 			break;
 
 		case WM_MOUSEMOVE:
@@ -116,48 +117,4 @@ void CenterWindow(HWND hwnd)
 
 	SetWindowPos(hwnd, HWND_TOP, (screen_w - win_w) / 2, (screen_h - win_h) / 2,
 	        0, 0, SWP_NOSIZE);
-}
-
-LRESULT CALLBACK PanelProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-
-	switch (msg)
-	{
-		case WM_LBUTTONUP:
-
-			break;
-	}
-
-	return DefWindowProcW(hwnd, msg, wParam, lParam);
-}
-
-void RegisterRedPanelClass(void)
-{
-
-	HBRUSH hbrush = CreateSolidBrush(RGB(255, 0, 0));
-
-	WNDCLASSW rwc =
-	{ 0 };
-
-	rwc.lpszClassName = L"RedPanelClass";
-	rwc.hbrBackground = hbrush;
-	rwc.lpfnWndProc = PanelProc;
-	rwc.hCursor = LoadCursor(0, IDC_ARROW);
-	RegisterClassW(&rwc);
-}
-
-void RegisterBluePanelClass(void)
-{
-
-	HBRUSH hbrush = CreateSolidBrush(RGB(0, 0, 255));
-
-	WNDCLASSW rwc =
-	{ 0 };
-
-	rwc.lpszClassName = L"BluePanelClass";
-	rwc.hbrBackground = hbrush;
-	rwc.lpfnWndProc = PanelProc;
-	rwc.hCursor = LoadCursor(0, IDC_ARROW);
-
-	RegisterClassW(&rwc);
 }
