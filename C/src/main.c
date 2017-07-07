@@ -10,9 +10,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         int CmdShow)
 {
-	MSG msg;
-	WNDCLASSW wc =
-	{ 0 };
+	WNDCLASSW wc = {0};
 
 	wc.lpszClassName = L"Window";
 	wc.hInstance = hInstance;
@@ -25,6 +23,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 	hwnd = CreateWindowW(wc.lpszClassName, L"Window",
 	        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
 	        100, 100, 250, 150, 0, 0, hInstance, 0);
+
+	return gameLoop();
+}
+
+int gameLoop()
+{
+	MSG msg;
 
 	while (TRUE)
 	{
@@ -40,15 +45,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 				DispatchMessage(&msg);
 			}
 			draw();
+			handleKey();
+
+			Sleep(5);
 		}
 	}
 
-	return (int) msg.wParam;
+	return 0;
 }
 
 void draw()
 {
-	HDC hdcTotalArtist = GetDC(hwnd);
+	HDC hdc = GetDC(hwnd);
 
 	RECT rect;
 
@@ -56,43 +64,24 @@ void draw()
 	{
 		int width = rect.right - rect.left;
 		int height = rect.bottom - rect.top;
-		Rectangle(hdcTotalArtist, 0, 0, width, height);
+		Rectangle(hdc, 0, 0, width, height);
 	}
 	else
 	{
 		PostQuitMessage(99);
 	}
 
-	Rectangle(hdcTotalArtist, xPos - 5, yPos - 5, xPos + 5, yPos + 5);
+	Rectangle(hdc, xPos - 5, yPos - 5, xPos + 5, yPos + 5);
 
-	ReleaseDC(hwnd, hdcTotalArtist);
+	ReleaseDC(hwnd, hdc);
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-		case WM_KEYDOWN:
-			if (wParam == VK_ESCAPE)
-			{
-				int ret = MessageBoxW(hwnd, L"Are you sure you want to quit?",
-				        L"Message", MB_OKCANCEL);
-				if (ret == IDOK)
-				{
-					SendMessage(hwnd, WM_CLOSE, 0, 0);
-				}
-			}
-
-			break;
-
 		case WM_CREATE:
-			CenterWindow(hwnd);
-			break;
-
-		case WM_MOUSEMOVE:
-			;
-			xPos = GET_X_LPARAM(lParam);
-			yPos = GET_Y_LPARAM(lParam);
+			init(hwnd);
 			break;
 
 		case WM_DESTROY:
@@ -103,18 +92,37 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProcW(hwnd, msg, wParam, lParam);
 }
 
-void CenterWindow(HWND hwnd)
+void handleKey()
 {
-	RECT rc =
-	{ 0 };
+	if(((1 << 15) & GetAsyncKeyState('W')) && yPos > 0)
+	{
+		yPos -= 1;
+	}
 
+	if(((1 << 15) & GetAsyncKeyState('S')) && yPos < screen_h)
+	{
+		yPos += 1;
+	}
+
+	if(((1 << 15) & GetAsyncKeyState('A')) && xPos > 0)
+	{
+		xPos -= 1;
+	}
+
+	if(((1 << 15) & GetAsyncKeyState('D')) && xPos < screen_w)
+	{
+		xPos += 1;
+	}
+}
+
+void init(HWND hwnd)
+{
+	RECT rc;
 	GetWindowRect(hwnd, &rc);
 	int win_w = rc.right - rc.left;
 	int win_h = rc.bottom - rc.top;
-
-	int screen_w = GetSystemMetrics(SM_CXSCREEN);
-	int screen_h = GetSystemMetrics(SM_CYSCREEN);
-
+	screen_w = GetSystemMetrics(SM_CXSCREEN);
+	screen_h = GetSystemMetrics(SM_CYSCREEN);
 	SetWindowPos(hwnd, HWND_TOP, (screen_w - win_w) / 2, (screen_h - win_h) / 2,
 	        0, 0, SWP_NOSIZE);
 }
