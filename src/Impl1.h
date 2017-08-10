@@ -8,14 +8,22 @@
 #ifndef IMPL1_H_
 #define IMPL1_H_
 
-#include "Interface.h"
+#include "Ai.h"
 
-class Impl1: public Interface
+class Impl1 : public Ai
 {
 public:
 	Impl1();
 	virtual ~Impl1();
-	void saySomething();
+	Move* move();
+	int getX();
+	int getY();
+	void setX(int newX);
+	void setY(int newY);
+
+private:
+	int x;
+	int y;
 };
 
 #endif /* IMPL1_H_ */

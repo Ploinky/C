@@ -9,8 +9,8 @@
 
 Impl2::Impl2()
 {
-	// TODO Auto-generated constructor stub
-
+	x = 0;
+	y = 0;
 }
 
 Impl2::~Impl2()
@@ -18,7 +18,27 @@ Impl2::~Impl2()
 	// TODO Auto-generated destructor stub
 }
 
-void Impl2::saySomething()
+Move* Impl2::move()
 {
-	printf("I am Impl2!\n");
+	return new Move(5, 5);
+}
+
+int Impl2::getX()
+{
+	return x;
+}
+
+int Impl2::getY()
+{
+	return y;
+}
+
+void Impl2::setX(int newX)
+{
+	x = newX;
+}
+
+void Impl2::setY(int newY)
+{
+	y = newY;
 }

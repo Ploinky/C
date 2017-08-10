@@ -5,15 +5,15 @@
  *      Author: johannes.litger
  */
 
-#include "Interface.h"
+#include "Ai.h"
 
-Interface::Interface()
+Ai::Ai()
 {
 	// TODO Auto-generated constructor stub
 
 }
 
-Interface::~Interface()
+Ai::~Ai()
 {
 	// TODO Auto-generated destructor stub
 }
